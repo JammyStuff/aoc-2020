@@ -1,39 +1,29 @@
+use std::collections::HashSet;
 use std::io::{self, Read};
 
 const DESIRED_SUM: u32 = 2020;
 
 fn find_entries(entries: &[u32], sum: u32) -> Option<(u32, u32)> {
-    let num_entries = entries.len();
+    let mut seen = HashSet::new();
 
-    for i in 0..(num_entries - 1) {
-        let start = i + 1;
-
-        for j in start..num_entries {
-            let value = entries[i] + entries[j];
-            if value == sum {
-                return Some((entries[i], entries[j]));
+    for i in entries {
+        if let Some(rem) = sum.checked_sub(*i) {
+            if seen.contains(&rem) {
+                return Some((rem, *i));
             }
         }
+        seen.insert(i);
     }
 
     return None;
 }
 
 fn find_3_entries(entries: &[u32], sum: u32) -> Option<(u32, u32, u32)> {
-    let num_entries = entries.len();
-
-    for i in 0..(num_entries - 2) {
-        let start_j = i + 1;
-
-        for j in start_j..(num_entries - 1) {
-            let start_k = j + 1;
-
-            for k in start_k..num_entries {
-                let value = entries[i] + entries[j] + entries[k];
-                if value == sum {
-                    return Some((entries[i], entries[j], entries[k]));
-                }
-            }
+    for i in 0..entries.len() {
+        let a = entries[i];
+        let rem = sum - a;
+        if let Some((b, c)) = find_entries(&entries[i+1..], rem) {
+            return Some((a, b, c));
         }
     }
 
