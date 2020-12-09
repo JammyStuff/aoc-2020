@@ -1,24 +1,9 @@
-use std::collections::HashSet;
+use day01::find_entries;
 use std::io::{self, Read};
 
-const DESIRED_SUM: u32 = 2020;
+const DESIRED_SUM: u64 = 2020;
 
-fn find_entries(entries: &[u32], sum: u32) -> Option<(u32, u32)> {
-    let mut seen = HashSet::new();
-
-    for i in entries {
-        if let Some(rem) = sum.checked_sub(*i) {
-            if seen.contains(&rem) {
-                return Some((rem, *i));
-            }
-        }
-        seen.insert(i);
-    }
-
-    return None;
-}
-
-fn find_3_entries(entries: &[u32], sum: u32) -> Option<(u32, u32, u32)> {
+fn find_3_entries(entries: &[u64], sum: u64) -> Option<(u64, u64, u64)> {
     for i in 0..entries.len() {
         let a = entries[i];
         let rem = sum - a;
@@ -30,7 +15,7 @@ fn find_3_entries(entries: &[u32], sum: u32) -> Option<(u32, u32, u32)> {
     return None;
 }
 
-fn find_value(entries: &[u32]) -> Option<u32> {
+fn find_value(entries: &[u64]) -> Option<u64> {
     let entries = find_entries(entries, DESIRED_SUM);
     match entries {
         Some((a, b)) => return Some(a * b),
@@ -38,7 +23,7 @@ fn find_value(entries: &[u32]) -> Option<u32> {
     }
 }
 
-fn find_3_value(entries: &[u32]) -> Option<u32> {
+fn find_3_value(entries: &[u64]) -> Option<u64> {
     let entries = find_3_entries(entries, DESIRED_SUM);
     match entries {
         Some((a, b, c)) => return Some(a * b * c),
@@ -48,7 +33,7 @@ fn find_3_value(entries: &[u32]) -> Option<u32> {
 
 fn part1(input: &str) {
     let lines = input.lines();
-    let entries: Vec<u32> = lines.map(|l| l.parse().unwrap()).collect();
+    let entries: Vec<u64> = lines.map(|l| l.parse().unwrap()).collect();
 
     match find_value(&entries) {
         Some(x) => println!("Part 1 answer: {}", x),
@@ -58,7 +43,7 @@ fn part1(input: &str) {
 
 fn part2(input: &str) {
     let lines = input.lines();
-    let entries: Vec<u32> = lines.map(|l| l.parse().unwrap()).collect();
+    let entries: Vec<u64> = lines.map(|l| l.parse().unwrap()).collect();
 
     match find_3_value(&entries) {
         Some(x) => println!("Part 2 answer: {}", x),
@@ -76,27 +61,6 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_find_entries_1() {
-        let entries = vec![1721, 979, 366, 299, 675, 1456];
-        let result = find_entries(&entries, 2020);
-        assert_eq!(result, Some((1721, 299)));
-    }
-
-    #[test]
-    fn test_find_entries_2() {
-        let entries = vec![100, 200, 300, 500];
-        let result = find_entries(&entries, 500);
-        assert_eq!(result, Some((200, 300)));
-    }
-
-    #[test]
-    fn test_find_entries_3() {
-        let entries = vec![1, 2, 3, 4, 5];
-        let result = find_entries(&entries, 100);
-        assert_eq!(result, None);
-    }
 
     #[test]
     fn test_find_3_entries() {
